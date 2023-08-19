@@ -1,6 +1,5 @@
 from flask import Flask, render_template,request,redirect,url_for
 import requests
-# import pymysql as ps
 import sqlite3
 
 
@@ -70,7 +69,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password")
-        # cn = ps.connect(host='localhost', user='root', port=3306, database='mybase', password='Lav@7203')
         conn = sqlite3.connect("users.db")
         c = conn.cursor()
         query = "SELECT * FROM readers where username=?"
@@ -78,10 +76,6 @@ def login():
         tables = c.fetchall()
         conn.commit()
         conn.close()
-        # cmd.connection.commit()
-        # cmd.close()
-        # cn.close()
-        # tables = cmd.fetchall()
         if  tables and tables[0][0] and tables[0][2]==password:
             return render_template('user.html')
         else:
@@ -95,23 +89,17 @@ def signup():
         username = request.form.get("username")
         password = request.form.get("password")
         conn = sqlite3.connect("users.db")
-        # cn = ps.connect(host='localhost', user='root', port=3306, database='mybase', password='Lav@7203')
         c = conn.cursor()
         query = "SELECT * FROM readers where username=?"
         c.execute(query,(username,))
         r = c.fetchall()
         conn.commit()
         conn.close()
-        # r = cmd.fetchall()
         if not r :
-            # cn = ps.connect(host='localhost', user='root', port=3306, database='mybase', password='Lav@7203')
             conn = sqlite3.connect("users.db")
             c = conn.cursor()
             query = "INSERT INTO readers (username, password) VALUES(?, ?)"
             c.execute(query,(username,password))
-            # cmd.connection.commit()
-            # cmd.close()
-            # cn.close()
             conn.commit()
             conn.close()
             return redirect(url_for('login'))
